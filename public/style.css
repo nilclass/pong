@@ -1,6 +1,9 @@
 
 body {
     background: black;
+    color: white;
+    font-family: monospace;
+    font-size: 14px;
     margin: 0;
     padding: 0;
     text-align: center;
@@ -10,3 +13,4 @@ canvas {
     border: solid 1px white;
     margin-top: 30px;
 }
+

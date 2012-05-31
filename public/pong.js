@@ -28,12 +28,22 @@ var KEY_DOWN = 40;
                 _.each(params.panel_positions, function(pos, i) {
                     this.panels[i].position = pos;
                 }, this);
+                this.ballPosition = params.ball_position;
                 this.render();
             },
 
             exception: function(type, message, backtrace) {
                 console.error("Exception: " + message + " (" + type + ")");
                 console.error(backtrace);
+            },
+
+            loose: function(side) {
+                console.log('side', side, 'lost');
+                $('#info .message').text(
+                    side == this.side ?
+                        "You lost!" :
+                        "You won!"
+                );
             }
         },
 
@@ -52,10 +62,12 @@ var KEY_DOWN = 40;
             context.save();
             context.fillStyle = 'black';
             context.fillRect(0, 0, this.width, this.height);
+            this.renderBall(context);
             this.renderPanel(context, this.panels[0]);
             context.translate(this.width - this.panelHeight, 0);
             this.renderPanel(context, this.panels[1]);
             context.restore();
+            $('#info .side').text(this.side);
         },
 
         renderPanel: function(context, panel) {
@@ -66,12 +78,20 @@ var KEY_DOWN = 40;
             );
         },
 
+        renderBall: function(context) {
+            context.fillStyle = 'white';
+            context.beginPath();
+            context.arc(this.ballPosition[0], this.ballPosition[1], 5, 0, Math.PI * 2);
+            context.closePath();
+            context.fill();
+        },
+
         movePanelDown: function(evt) {
-            this.sendCommand('move_panel', this.side, 'down');
+            this.sendCommand('move_panel', { side: this.side, direction: 'down' });
         },
 
         movePanelUp: function(evt) {
-            this.sendCommand('move_panel', this.side, 'up');
+            this.sendCommand('move_panel', { side: this.side, direction: 'up' });
         },
 
         sendCommand: function() {
@@ -96,10 +116,18 @@ var KEY_DOWN = 40;
 
             this.socket.onmessage = _.bind(function(evt) {
                 var message = JSON.parse(evt.data);
-                console.log("Message: ", message);
-                this.actions[message.method].apply(this, message.args)
+                var actionFunction = this.actions[message.method]
+                if(! actionFunction) {
+                    console.error("Action not defined: ", message.method);
+                    return;
+                }
+                actionFunction.apply(this, message.args)
             }, this);
 
+            $('button[data-action]').click(_.bind(function(evt) {
+                var action = $(evt.target).attr('data-action');
+                this.sendCommand(action);
+            }, this));
         }
 
     };

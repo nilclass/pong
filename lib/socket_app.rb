@@ -4,7 +4,7 @@ class SocketApp < Rack::WebSocket::Application
   attr :pong
 
   def initialize(pong)
-    super(:backend => { :debug => true })
+    super()
     @pong = pong
   end
 
@@ -17,7 +17,6 @@ class SocketApp < Rack::WebSocket::Application
     msg = JSON.load(data)
     puts "Message: #{msg.inspect}"
     pong.actions.__send__(msg['method'], *msg['args'])
-    puts "SENT ACTION"
   rescue => exc
     send_command('exception', exc.class, exc.message, exc.backtrace)
   end

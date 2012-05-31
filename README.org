@@ -1,0 +1,21 @@
+
+** Pong... you know... pong!
+
+Usage: ./start.rb # -> http://localhost:1234/
+
+
+** Commands
+*** Client -> Server
+
+| *Name*     | *Params*                      |
+|------------+-------------------------------|
+| move_panel | { side, direction (up/down) } |
+
+*** Server -> Client
+
+| *Name*    | *Params*                  |
+|-----------+---------------------------|
+| update    | { side, panel_positions } |
+| exception | type, message, backtrace  |
+
+
