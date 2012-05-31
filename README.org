@@ -10,12 +10,16 @@ Usage: ./start.rb # -> http://localhost:1234/
 | *Name*     | *Params*                      |
 |------------+-------------------------------|
 | move_panel | { side, direction (up/down) } |
+| start_game |                               |
+| stop_game  |                               |
 
 *** Server -> Client
 
-| *Name*    | *Params*                  |
-|-----------+---------------------------|
-| update    | { side, panel_positions } |
-| exception | type, message, backtrace  |
+| *Name*    | *Params*                                 |
+|-----------+------------------------------------------|
+| update    | { side, panel_positions, ball_position } |
+| exception | type, message, backtrace                 |
+| loose     | side                                     |
+
 
 
